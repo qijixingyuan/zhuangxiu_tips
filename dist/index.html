@@ -38,7 +38,7 @@
     .intro { padding: 20px; border-radius: var(--radius); color: #fff; background: linear-gradient(135deg, var(--green), var(--green-dark)); box-shadow: var(--shadow); }
     .intro h1 { margin: 0; font-size: 20px; line-height: 1.35; letter-spacing: -.03em; }
     .intro p { margin: 7px 0 0; color: rgba(255,255,255,.75); font-size: 13px; line-height: 1.55; }
-    .toolbar { display: grid; grid-template-columns: 1fr auto; gap: 10px; margin: 16px 0; }
+    .toolbar { display: grid; grid-template-columns: 1fr auto auto; gap: 8px; margin: 16px 0; }
     .search { display: flex; align-items: center; gap: 8px; min-height: 42px; padding: 0 13px; border: 1px solid var(--line); border-radius: 13px; background: #fff; }
     .search input { width: 100%; border: 0; outline: 0; color: var(--ink); background: transparent; font-size: 13px; }
     .tool-button { display: inline-flex; align-items: center; justify-content: center; min-width: 42px; min-height: 42px; padding: 0 12px; border-radius: 13px; color: var(--green); background: var(--green-soft); font-size: 13px; }
@@ -66,6 +66,7 @@
     .image-thumb { overflow: hidden; min-height: 72px; border-radius: 10px; background: linear-gradient(135deg, #cac9bf, #b5b5a9); }
     .image-thumb img { display: block; width: 100%; height: 100%; min-height: 72px; object-fit: cover; }
     .image-placeholder { display: grid; place-items: center; min-height: 72px; color: rgba(255,255,255,.9); font-size: 11px; }
+    .image-strip > .image-placeholder:only-child { grid-column: 1 / -1; }
     .card-bottom { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 12px; }
     .spec-summary { overflow: hidden; color: var(--muted); font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
     .card-arrow { color: #8a8f8d; font-size: 22px; line-height: 1; }
@@ -133,7 +134,7 @@
     </header>
     <main>
       <section class="intro"><h1>把每个想法，变成一条能落地的事项</h1><p>家人、设计师、施工方共用一份清单。先记下来，再一起确认。</p></section>
-      <div class="toolbar"><label class="search"><span aria-hidden="true">⌕</span><input id="searchInput" type="search" placeholder="搜索事项、房间或尺寸" /></label><button class="tool-button" id="exportButton" type="button" title="导出数据">导出</button><input id="importInput" class="hidden" type="file" accept="application/json" /></div>
+      <div class="toolbar"><label class="search"><span aria-hidden="true">⌕</span><input id="searchInput" type="search" placeholder="搜索事项、房间或尺寸" /></label><button class="tool-button" id="importButton" type="button" title="导入数据">导入</button><button class="tool-button" id="exportButton" type="button" title="导出数据">导出</button><input id="importInput" class="hidden" type="file" accept="application/json" /></div>
       <div class="filters" role="tablist" aria-label="筛选状态"><button class="filter active" data-filter="all" type="button">全部 <span id="allCount">0</span></button><button class="filter pending" data-filter="pending" type="button">待定 <span id="pendingCount">0</span></button><button class="filter done" data-filter="done" type="button">已确定 <span id="doneCount">0</span></button></div>
       <div class="section-heading"><h2>最近更新</h2><span id="updatedHint">本设备自动保存</span></div>
       <section id="cards" class="cards" aria-live="polite"></section>
@@ -198,7 +199,7 @@
     $('#imageInput').addEventListener('change',(event)=>{pendingFiles=[...event.target.files].slice(0,4-editingImages.length);pendingFiles.forEach((file)=>{if(!file.type.startsWith('image/'))return;fileToDataUrl(file).then((src)=>{editingImages.push(src);renderPreview();}).catch(()=>{});});});
     $('#itemForm').addEventListener('submit',(event)=>{event.preventDefault();const title=$('#titleInput').value.trim();const room=$('#roomInput').value.trim();if(!title||!room)return;const id=$('#itemId').value;const existing=state.items.find((item)=>item.id===id);const item=existing||{id:uid(),status:'pending',confirmedBy:''};Object.assign(item,{title,room,description:$('#descriptionInput').value.trim(),images:editingImages,measurements:collectMeasurements(),notes:$('#notesInput').value.trim(),author:currentUser||'未署名',updatedAt:new Date().toISOString()});if(!existing)state.items.unshift(item);updateAfterDataChange();closeModal('formModal');});
     $('#exportButton').addEventListener('click',()=>{const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const link=document.createElement('a');link.href=url;link.download=`家庭装修需求-${new Date().toISOString().slice(0,10)}.json`;link.click();URL.revokeObjectURL(url);});
-    $('#exportButton').addEventListener('contextmenu',(event)=>{event.preventDefault();$('#importInput').click();});
+    $('#importButton').addEventListener('click',()=>$('#importInput').click());
     $('#importInput').addEventListener('change',(event)=>{const file=event.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=()=>{try{const imported=JSON.parse(reader.result);if(!imported||!Array.isArray(imported.items))throw new Error('invalid');state={version:1,updatedAt:new Date().toISOString(),items:imported.items};saveState();renderCards();alert('导入成功。');}catch(_){alert('这不是有效的装修需求数据文件。');}};reader.readAsText(file);event.target.value='';});
     document.querySelectorAll('[data-close]').forEach((button)=>button.addEventListener('click',()=>closeModal(button.dataset.close)));
     document.querySelectorAll('.modal-backdrop').forEach((backdrop)=>backdrop.addEventListener('click',(event)=>{if(event.target===backdrop)closeModal(backdrop.id);}));
