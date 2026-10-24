@@ -153,14 +153,14 @@
     const STORAGE_KEY = 'home-renovation-brief:v1';
     const NAME_KEY = 'home-renovation-brief:nickname';
     const KNOWN_NAMES_KEY = 'home-renovation-brief:names';
-    const channel = 'BroadcastChannel' in window ? new BroadcastChannel('home-renovation-brief') : null;
+    const memoryStore = {};
+    let channel = null;
+    try { if ('BroadcastChannel' in window) channel = new BroadcastChannel('home-renovation-brief'); } catch (_) { channel = null; }
     let currentFilter = 'all';
     let editingImages = [];
     let pendingFiles = [];
-    let state = loadState();
-    let currentUser = localStorage.getItem(NAME_KEY) || '';
 
-    const $ = (selector) => document.querySelector(selector);
+    const $ = (selector, root = document) => root.querySelector(selector);
     const escapeHtml = (value) => String(value ?? '').replace(/[&<>'"]/g, (char) => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
     const safeImage = (value) => typeof value === 'string' && value.startsWith('data:image/') ? value : '';
     const uid = () => `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
@@ -169,8 +169,12 @@
       {id: uid(), title:'客厅电视墙插座', room:'客厅', author:'设计师', description:'电视柜和扫地机器人都要方便使用。', images:[], measurements:[{label:'距地高度', value:'300', unit:'mm'},{label:'插座数量', value:'6', unit:'个'}], notes:'预留网线和电源，注意不要被柜体挡住。', status:'pending', confirmedBy:'', updatedAt:new Date().toISOString()},
       {id: uid(), title:'主卧衣柜', room:'主卧', author:'林阿姨', description:'希望收纳换季被子和长衣。', images:[], measurements:[{label:'宽', value:'2400', unit:'mm'},{label:'深', value:'600', unit:'mm'}], notes:'柜门颜色再和设计师确认。', status:'done', confirmedBy:'设计师', updatedAt:new Date().toISOString()}
     ]});
-    function loadState() { try { const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY)); if (parsed && Array.isArray(parsed.items)) return parsed; } catch (_) {} return defaultState(); }
-    function saveState(broadcast = true) { state.updatedAt = new Date().toISOString(); localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); if (broadcast && channel) channel.postMessage({type:'state', state}); }
+    function storageGet(key) { try { return localStorage.getItem(key); } catch (_) { return memoryStore[key] || null; } }
+    function storageSet(key, value) { memoryStore[key] = value; try { localStorage.setItem(key, value); } catch (_) {} }
+    function loadState() { try { const parsed = JSON.parse(storageGet(STORAGE_KEY)); if (parsed && Array.isArray(parsed.items)) return parsed; } catch (_) {} return defaultState(); }
+    let state = loadState();
+    let currentUser = storageGet(NAME_KEY) || '';
+    function saveState(broadcast = true) { state.updatedAt = new Date().toISOString(); storageSet(STORAGE_KEY, JSON.stringify(state)); if (broadcast && channel) { try { channel.postMessage({type:'state', state}); } catch (_) {} } }
     function statusLabel(status) { return status === 'done' ? '已确定' : '待定'; }
     function getMeasurementsText(item) { return item.measurements?.filter((row) => row.label || row.value).map((row) => `${row.label || '尺寸'} ${row.value || '—'} ${row.unit || ''}`.trim()).join('  ·  ') || '还没有填写尺寸规范'; }
     function openModal(id) { const el = document.getElementById(id); el.classList.add('open'); el.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden'; }
@@ -194,7 +198,9 @@
     $('#cards').addEventListener('click',(event)=>{ const card=event.target.closest('[data-id]'); if(card) renderDetail(state.items.find((item)=>item.id===card.dataset.id)), openModal('detailModal'); });
     $('#addButton').addEventListener('click',()=>{ if(!currentUser) openModal('nicknameModal'); else openNewItem(); });
     $('#userButton').addEventListener('click',()=>{ $('#nicknameInput').value=currentUser; openModal('nicknameModal'); setTimeout(()=>$('#nicknameInput').focus(),50); });
-    $('#nicknameForm').addEventListener('submit',(event)=>{event.preventDefault();const name=$('#nicknameInput').value.trim();if(!name)return;currentUser=name;localStorage.setItem(NAME_KEY,name);const names=JSON.parse(localStorage.getItem(KNOWN_NAMES_KEY)||'[]');if(!names.includes(name))localStorage.setItem(KNOWN_NAMES_KEY,JSON.stringify([...names,name]));renderHeader();closeModal('nicknameModal');});
+    function saveNickname(event) { if (event) { event.preventDefault(); event.stopPropagation(); } const name=$('#nicknameInput').value.trim(); if(!name){ $('#nicknameInput').focus(); return; } currentUser=name; storageSet(NAME_KEY,name); let names=[]; try { names=JSON.parse(storageGet(KNOWN_NAMES_KEY)||'[]'); } catch (_) {} if(!Array.isArray(names)) names=[]; if(!names.includes(name)) storageSet(KNOWN_NAMES_KEY,JSON.stringify([...names,name])); renderHeader(); closeModal('nicknameModal'); }
+    $('#nicknameForm').addEventListener('submit',saveNickname);
+    $('#nicknameForm button[type="submit"]').addEventListener('click',saveNickname);
     $('#addMeasurement').addEventListener('click',()=>addMeasurementRow());
     $('#imageInput').addEventListener('change',(event)=>{pendingFiles=[...event.target.files].slice(0,4-editingImages.length);pendingFiles.forEach((file)=>{if(!file.type.startsWith('image/'))return;fileToDataUrl(file).then((src)=>{editingImages.push(src);renderPreview();}).catch(()=>{});});});
     $('#itemForm').addEventListener('submit',(event)=>{event.preventDefault();const title=$('#titleInput').value.trim();const room=$('#roomInput').value.trim();if(!title||!room)return;const id=$('#itemId').value;const existing=state.items.find((item)=>item.id===id);const item=existing||{id:uid(),status:'pending',confirmedBy:''};Object.assign(item,{title,room,description:$('#descriptionInput').value.trim(),images:editingImages,measurements:collectMeasurements(),notes:$('#notesInput').value.trim(),author:currentUser||'未署名',updatedAt:new Date().toISOString()});if(!existing)state.items.unshift(item);updateAfterDataChange();closeModal('formModal');});
