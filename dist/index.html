@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#2f6955" />
+  <title>家庭装修需求</title>
+  <style>
+    :root {
+      --paper: #f8f6f0;
+      --card: #ffffff;
+      --ink: #20252a;
+      --muted: #777c80;
+      --line: #e7e3da;
+      --green: #2f6955;
+      --green-dark: #23513f;
+      --green-soft: #e1eee7;
+      --yellow: #f8e9b9;
+      --yellow-ink: #6d5b1e;
+      --shadow: 0 12px 32px rgba(48, 55, 53, .09);
+      --radius: 18px;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; background: #e9e6de; color: var(--ink); font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", sans-serif; }
+    button, input, textarea, select { font: inherit; }
+    button { border: 0; cursor: pointer; }
+    button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible { outline: 3px solid rgba(47,105,85,.26); outline-offset: 2px; }
+    .app-shell { width: min(100%, 760px); min-height: 100vh; margin: 0 auto; background: var(--paper); }
+    .app-header { position: sticky; top: 0; z-index: 5; display: flex; align-items: center; justify-content: space-between; padding: 18px 20px 14px; background: color-mix(in srgb, var(--paper) 94%, transparent); backdrop-filter: blur(16px); }
+    .brand { display: flex; align-items: center; gap: 10px; }
+    .brand-mark { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 12px; color: var(--green); background: var(--green-soft); font-weight: 800; }
+    .brand-title { margin: 0; font-size: 19px; letter-spacing: -.03em; }
+    .brand-subtitle { margin: 2px 0 0; color: var(--muted); font-size: 11px; }
+    .user-button { display: inline-flex; align-items: center; gap: 7px; padding: 8px 10px; border-radius: 999px; color: var(--green); background: transparent; font-size: 13px; }
+    .user-button:hover { background: var(--green-soft); }
+    .avatar { display: grid; place-items: center; width: 25px; height: 25px; border-radius: 50%; color: var(--green); background: var(--green-soft); font-size: 12px; font-weight: 700; }
+    main { padding: 0 20px 106px; }
+    .intro { padding: 20px; border-radius: var(--radius); color: #fff; background: linear-gradient(135deg, var(--green), var(--green-dark)); box-shadow: var(--shadow); }
+    .intro h1 { margin: 0; font-size: 20px; line-height: 1.35; letter-spacing: -.03em; }
+    .intro p { margin: 7px 0 0; color: rgba(255,255,255,.75); font-size: 13px; line-height: 1.55; }
+    .toolbar { display: grid; grid-template-columns: 1fr auto; gap: 10px; margin: 16px 0; }
+    .search { display: flex; align-items: center; gap: 8px; min-height: 42px; padding: 0 13px; border: 1px solid var(--line); border-radius: 13px; background: #fff; }
+    .search input { width: 100%; border: 0; outline: 0; color: var(--ink); background: transparent; font-size: 13px; }
+    .tool-button { display: inline-flex; align-items: center; justify-content: center; min-width: 42px; min-height: 42px; padding: 0 12px; border-radius: 13px; color: var(--green); background: var(--green-soft); font-size: 13px; }
+    .tool-button:hover { background: #d4e8dc; }
+    .filters { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: none; }
+    .filters::-webkit-scrollbar { display: none; }
+    .filter { flex: 0 0 auto; padding: 9px 13px; border-radius: 999px; color: var(--muted); background: #eeece6; font-size: 12px; }
+    .filter.active { color: #fff; background: var(--ink); }
+    .filter.active.pending { color: var(--yellow-ink); background: var(--yellow); }
+    .filter.active.done { color: var(--green); background: var(--green-soft); }
+    .section-heading { display: flex; align-items: baseline; justify-content: space-between; margin: 22px 0 10px; }
+    .section-heading h2 { margin: 0; color: var(--muted); font-size: 12px; font-weight: 600; }
+    .section-heading span { color: #a5a7a6; font-size: 11px; }
+    .cards { display: grid; gap: 12px; }
+    .requirement-card { overflow: hidden; padding: 15px; border: 1px solid rgba(231,227,218,.65); border-radius: var(--radius); background: var(--card); box-shadow: 0 5px 18px rgba(48,55,53,.04); transition: transform .16s ease, box-shadow .16s ease; }
+    .requirement-card:hover { transform: translateY(-1px); box-shadow: var(--shadow); }
+    .card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+    .card-title { margin: 0; font-size: 16px; line-height: 1.35; letter-spacing: -.02em; }
+    .status { flex: 0 0 auto; padding: 7px 10px; border-radius: 999px; font-size: 11px; }
+    .status.pending { color: var(--yellow-ink); background: var(--yellow); }
+    .status.done { color: var(--green); background: var(--green-soft); }
+    .card-meta, .card-note { color: var(--muted); font-size: 12px; line-height: 1.5; }
+    .card-meta { margin-top: 7px; }
+    .image-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-top: 12px; }
+    .image-thumb { overflow: hidden; min-height: 72px; border-radius: 10px; background: linear-gradient(135deg, #cac9bf, #b5b5a9); }
+    .image-thumb img { display: block; width: 100%; height: 100%; min-height: 72px; object-fit: cover; }
+    .image-placeholder { display: grid; place-items: center; min-height: 72px; color: rgba(255,255,255,.9); font-size: 11px; }
+    .card-bottom { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 12px; }
+    .spec-summary { overflow: hidden; color: var(--muted); font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+    .card-arrow { color: #8a8f8d; font-size: 22px; line-height: 1; }
+    .empty { padding: 34px 20px; border: 1px dashed #d6d1c6; border-radius: var(--radius); color: var(--muted); text-align: center; }
+    .empty strong { display: block; margin-bottom: 6px; color: var(--ink); font-size: 15px; }
+    .fab { position: fixed; z-index: 4; right: max(20px, calc((100vw - 720px) / 2)); bottom: 24px; display: inline-flex; align-items: center; gap: 7px; padding: 15px 18px; border-radius: 16px; color: #fff; background: var(--green); box-shadow: 0 12px 28px rgba(47,105,85,.3); font-size: 14px; font-weight: 650; }
+    .fab:hover { background: var(--green-dark); }
+    .modal-backdrop { position: fixed; inset: 0; z-index: 20; display: grid; place-items: end center; padding: 16px; background: rgba(31,37,38,.36); opacity: 0; pointer-events: none; transition: opacity .2s ease; }
+    .modal-backdrop.open { opacity: 1; pointer-events: auto; }
+    .modal { width: min(100%, 620px); max-height: min(92vh, 760px); overflow-y: auto; padding: 20px; border-radius: 24px 24px 18px 18px; background: var(--paper); box-shadow: 0 20px 70px rgba(0,0,0,.22); transform: translateY(18px); transition: transform .2s ease; }
+    .modal-backdrop.open .modal { transform: translateY(0); }
+    .modal-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+    .modal-head h2 { margin: 0; font-size: 19px; letter-spacing: -.03em; }
+    .icon-button { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; color: var(--muted); background: #ece9e1; font-size: 19px; }
+    .form-grid { display: grid; gap: 12px; }
+    .field { display: grid; gap: 6px; }
+    .field label { color: var(--muted); font-size: 12px; }
+    .field input, .field textarea, .field select { width: 100%; border: 1px solid var(--line); border-radius: 12px; padding: 11px 12px; color: var(--ink); outline: 0; background: #fff; font-size: 14px; }
+    .field textarea { min-height: 78px; resize: vertical; line-height: 1.5; }
+    .field input:focus, .field textarea:focus, .field select:focus { border-color: var(--green); }
+    .upload-box { display: grid; gap: 5px; place-items: center; min-height: 105px; padding: 16px; border: 1px dashed #c8c6bc; border-radius: 14px; color: var(--muted); background: #fff; text-align: center; }
+    .upload-box strong { color: var(--green); font-size: 27px; font-weight: 400; line-height: 1; }
+    .upload-box span { font-size: 13px; }
+    .upload-box small { font-size: 11px; }
+    .upload-box input { display: none; }
+    .preview-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 8px; }
+    .preview-item { position: relative; overflow: hidden; aspect-ratio: 1; border-radius: 9px; background: #d1d0c7; }
+    .preview-item img { width: 100%; height: 100%; object-fit: cover; }
+    .preview-item button { position: absolute; top: 4px; right: 4px; display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; color: #fff; background: rgba(0,0,0,.55); font-size: 14px; }
+    .section-label { display: flex; align-items: center; justify-content: space-between; margin: 6px 0 2px; }
+    .section-label h3 { margin: 0; color: var(--muted); font-size: 12px; font-weight: 600; }
+    .text-button { padding: 0; color: var(--green); background: transparent; font-size: 12px; }
+    .measurement-row { display: grid; grid-template-columns: 1fr .72fr 78px 32px; gap: 6px; align-items: center; margin-bottom: 7px; }
+    .measurement-row input, .measurement-row select { min-width: 0; padding: 9px; border: 1px solid var(--line); border-radius: 10px; color: var(--ink); background: #fff; font-size: 13px; }
+    .remove-row { display: grid; place-items: center; width: 30px; height: 34px; border-radius: 9px; color: #a1645a; background: #f5e8e4; }
+    .form-actions { display: flex; gap: 8px; margin-top: 18px; }
+    .primary-button, .secondary-button, .danger-button { flex: 1; min-height: 46px; border-radius: 13px; font-size: 14px; }
+    .primary-button { color: #fff; background: var(--green); }
+    .secondary-button { color: var(--green); background: var(--green-soft); }
+    .danger-button { flex: 0 0 auto; padding: 0 14px; color: #9b5b50; background: #f5e8e4; }
+    .detail-image-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 16px; }
+    .detail-image { overflow: hidden; min-height: 105px; border-radius: 12px; background: #c7c6bc; }
+    .detail-image img { display: block; width: 100%; height: 100%; min-height: 105px; object-fit: cover; }
+    .detail-section { margin-top: 16px; }
+    .detail-section h3 { margin: 0 0 9px; color: var(--muted); font-size: 12px; font-weight: 600; }
+    .spec-table { overflow: hidden; border-radius: 13px; background: #fff; }
+    .spec-line { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 12px 14px; border-bottom: 1px solid var(--line); font-size: 13px; }
+    .spec-line:last-child { border-bottom: 0; }
+    .spec-line span:first-child { color: var(--muted); }
+    .confirm-panel { padding: 15px; border-radius: 15px; background: #fff; }
+    .confirm-panel strong { display: block; margin-bottom: 5px; font-size: 15px; }
+    .confirm-panel p { margin: 0 0 12px; color: var(--muted); font-size: 12px; line-height: 1.5; }
+    .last-updated { margin-top: 14px; color: var(--muted); font-size: 11px; line-height: 1.6; }
+    .notice { margin: 12px 0 0; padding: 10px 12px; border-radius: 11px; color: #6b6659; background: #f1eee5; font-size: 11px; line-height: 1.5; }
+    .hidden { display: none !important; }
+    @media (min-width: 700px) { .app-shell { min-height: calc(100vh - 28px); margin: 14px auto; border-radius: 28px; box-shadow: 0 12px 50px rgba(43,49,49,.12); } .app-header { border-radius: 28px 28px 0 0; } main { padding-left: 34px; padding-right: 34px; } }
+    @media (max-width: 420px) { .app-header { padding-left: 16px; padding-right: 16px; } main { padding-left: 16px; padding-right: 16px; } .measurement-row { grid-template-columns: 1fr .68fr 64px 30px; } }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="app-header">
+      <div class="brand"><span class="brand-mark">家</span><div><h1 class="brand-title">装修需求</h1><p class="brand-subtitle">家庭共享清单 · 本地保存</p></div></div>
+      <button class="user-button" id="userButton" type="button"><span class="avatar" id="userAvatar">?</span><span id="userName">设置昵称</span></button>
+    </header>
+    <main>
+      <section class="intro"><h1>把每个想法，变成一条能落地的事项</h1><p>家人、设计师、施工方共用一份清单。先记下来，再一起确认。</p></section>
+      <div class="toolbar"><label class="search"><span aria-hidden="true">⌕</span><input id="searchInput" type="search" placeholder="搜索事项、房间或尺寸" /></label><button class="tool-button" id="exportButton" type="button" title="导出数据">导出</button><input id="importInput" class="hidden" type="file" accept="application/json" /></div>
+      <div class="filters" role="tablist" aria-label="筛选状态"><button class="filter active" data-filter="all" type="button">全部 <span id="allCount">0</span></button><button class="filter pending" data-filter="pending" type="button">待定 <span id="pendingCount">0</span></button><button class="filter done" data-filter="done" type="button">已确定 <span id="doneCount">0</span></button></div>
+      <div class="section-heading"><h2>最近更新</h2><span id="updatedHint">本设备自动保存</span></div>
+      <section id="cards" class="cards" aria-live="polite"></section>
+      <div class="notice">当前版本先用浏览器本地保存，适合先整理需求；换设备前请使用“导出”。接入云端后，才会实现真正的多人实时同步。</div>
+    </main>
+  </div>
+  <button class="fab" id="addButton" type="button"><span>＋</span>新增装修事项</button>
+
+  <div class="modal-backdrop" id="nicknameModal" aria-hidden="true"><section class="modal" role="dialog" aria-modal="true" aria-labelledby="nicknameTitle"><div class="modal-head"><h2 id="nicknameTitle">先告诉大家你是谁</h2><button class="icon-button" data-close="nicknameModal" type="button" aria-label="关闭">×</button></div><p class="card-note">昵称会写入你新增和确认的事项里，不需要注册账号。</p><form id="nicknameForm" class="form-grid"><div class="field"><label for="nicknameInput">你的昵称</label><input id="nicknameInput" required maxlength="20" placeholder="例如：林阿姨 / 王工 / 设计师陈老师" /></div><div class="form-actions"><button class="primary-button" type="submit">保存昵称</button></div></form></section></div>
+
+  <div class="modal-backdrop" id="formModal" aria-hidden="true"><section class="modal" role="dialog" aria-modal="true" aria-labelledby="formTitle"><div class="modal-head"><h2 id="formTitle">新增装修事项</h2><button class="icon-button" data-close="formModal" type="button" aria-label="关闭">×</button></div><form id="itemForm" class="form-grid"><input id="itemId" type="hidden" /><div class="field"><label for="titleInput">事项名称</label><input id="titleInput" required maxlength="80" placeholder="例如：厨房台面右侧插座" /></div><div class="field"><label for="roomInput">房间 / 位置</label><input id="roomInput" required maxlength="40" placeholder="例如：厨房 · 操作台右侧" /></div><div class="field"><label for="descriptionInput">具体想法</label><textarea id="descriptionInput" maxlength="500" placeholder="把想要的效果、使用场景或担忧写下来"></textarea></div><div class="field"><label class="upload-box" for="imageInput"><strong>＋</strong><span>添加参考图 / 现场照片</span><small>支持拍照或从相册选择，最多 4 张</small><input id="imageInput" type="file" accept="image/*" multiple /></label><div class="preview-grid" id="previewGrid"></div></div><div><div class="section-label"><h3>尺寸与规范 · 可添加多行</h3><button class="text-button" id="addMeasurement" type="button">＋ 添加一行</button></div><div id="measurementRows"></div></div><div class="field"><label for="notesInput">补充说明</label><textarea id="notesInput" maxlength="500" placeholder="例如：插座不要被柜体挡住；需要和水电图核对"></textarea></div><div class="form-actions"><button class="secondary-button" data-close="formModal" type="button">取消</button><button class="primary-button" type="submit">保存为待定事项</button></div></form></section></div>
+
+  <div class="modal-backdrop" id="detailModal" aria-hidden="true"><section class="modal" role="dialog" aria-modal="true" aria-labelledby="detailTitle"><div class="modal-head"><h2 id="detailTitle">事项详情</h2><button class="icon-button" data-close="detailModal" type="button" aria-label="关闭">×</button></div><div id="detailBody"></div></section></div>
+
+  <script>
+    const STORAGE_KEY = 'home-renovation-brief:v1';
+    const NAME_KEY = 'home-renovation-brief:nickname';
+    const KNOWN_NAMES_KEY = 'home-renovation-brief:names';
+    const channel = 'BroadcastChannel' in window ? new BroadcastChannel('home-renovation-brief') : null;
+    let currentFilter = 'all';
+    let editingImages = [];
+    let pendingFiles = [];
+    let state = loadState();
+    let currentUser = localStorage.getItem(NAME_KEY) || '';
+
+    const $ = (selector) => document.querySelector(selector);
+    const escapeHtml = (value) => String(value ?? '').replace(/[&<>'"]/g, (char) => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
+    const safeImage = (value) => typeof value === 'string' && value.startsWith('data:image/') ? value : '';
+    const uid = () => `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+    const nowLabel = () => new Intl.DateTimeFormat('zh-CN', {month:'numeric', day:'numeric', hour:'2-digit', minute:'2-digit'}).format(new Date());
+    const defaultState = () => ({ version: 1, updatedAt: new Date().toISOString(), items: [
+      {id: uid(), title:'客厅电视墙插座', room:'客厅', author:'设计师', description:'电视柜和扫地机器人都要方便使用。', images:[], measurements:[{label:'距地高度', value:'300', unit:'mm'},{label:'插座数量', value:'6', unit:'个'}], notes:'预留网线和电源，注意不要被柜体挡住。', status:'pending', confirmedBy:'', updatedAt:new Date().toISOString()},
+      {id: uid(), title:'主卧衣柜', room:'主卧', author:'林阿姨', description:'希望收纳换季被子和长衣。', images:[], measurements:[{label:'宽', value:'2400', unit:'mm'},{label:'深', value:'600', unit:'mm'}], notes:'柜门颜色再和设计师确认。', status:'done', confirmedBy:'设计师', updatedAt:new Date().toISOString()}
+    ]});
+    function loadState() { try { const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY)); if (parsed && Array.isArray(parsed.items)) return parsed; } catch (_) {} return defaultState(); }
+    function saveState(broadcast = true) { state.updatedAt = new Date().toISOString(); localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); if (broadcast && channel) channel.postMessage({type:'state', state}); }
+    function statusLabel(status) { return status === 'done' ? '已确定' : '待定'; }
+    function getMeasurementsText(item) { return item.measurements?.filter((row) => row.label || row.value).map((row) => `${row.label || '尺寸'} ${row.value || '—'} ${row.unit || ''}`.trim()).join('  ·  ') || '还没有填写尺寸规范'; }
+    function openModal(id) { const el = document.getElementById(id); el.classList.add('open'); el.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden'; }
+    function closeModal(id) { const el = document.getElementById(id); el.classList.remove('open'); el.setAttribute('aria-hidden','true'); if (!document.querySelector('.modal-backdrop.open')) document.body.style.overflow=''; }
+    function renderHeader() { $('#userName').textContent = currentUser || '设置昵称'; $('#userAvatar').textContent = currentUser ? currentUser.slice(0,1) : '?'; }
+    function renderCounts() { const all=state.items.length, pending=state.items.filter((i)=>i.status==='pending').length, done=all-pending; $('#allCount').textContent=all; $('#pendingCount').textContent=pending; $('#doneCount').textContent=done; }
+    function visibleItems() { const query=$('#searchInput').value.trim().toLowerCase(); return state.items.filter((item) => { const matchesFilter=currentFilter==='all'||item.status===currentFilter; const haystack=[item.title,item.room,item.description,item.notes,getMeasurementsText(item)].join(' ').toLowerCase(); return matchesFilter && (!query || haystack.includes(query)); }).sort((a,b)=>new Date(b.updatedAt)-new Date(a.updatedAt)); }
+    function renderCards() { renderCounts(); const items=visibleItems(); const root=$('#cards'); if (!items.length) { root.innerHTML='<div class="empty"><strong>还没有匹配的事项</strong><span>换个关键词，或新增一条需要一起确认的装修事项。</span></div>'; return; } root.innerHTML=items.map((item)=>{ const images=(item.images||[]).map(safeImage).filter(Boolean); const thumbs=images.length ? images.slice(0,3).map((src)=>`<div class="image-thumb"><img src="${src}" alt="参考图片" /></div>`).join('') : '<div class="image-thumb image-placeholder">参考图<br>点击查看</div>'; return `<article class="requirement-card" data-id="${escapeHtml(item.id)}"><div class="card-top"><h3 class="card-title">${escapeHtml(item.title)}</h3><span class="status ${item.status==='done'?'done':'pending'}">${statusLabel(item.status)}</span></div><div class="card-meta">${escapeHtml(item.room)}　·　${escapeHtml(item.author || '未署名')}提出</div><div class="image-strip">${thumbs}</div><div class="card-bottom"><span class="spec-summary">${escapeHtml(getMeasurementsText(item))}</span><span class="card-arrow" aria-hidden="true">›</span></div></article>`; }).join(''); }
+    function resetMeasurementRows(rows=[{label:'',value:'',unit:'mm'}]) { $('#measurementRows').innerHTML=''; rows.forEach((row)=>addMeasurementRow(row)); }
+    function addMeasurementRow(row={label:'',value:'',unit:'mm'}) { const wrap=document.createElement('div'); wrap.className='measurement-row'; wrap.innerHTML=`<input class="measurement-label" maxlength="30" placeholder="名称，如宽度" value="${escapeHtml(row.label)}" /><input class="measurement-value" maxlength="20" placeholder="数值" value="${escapeHtml(row.value)}" /><select class="measurement-unit"><option ${row.unit==='mm'?'selected':''}>mm</option><option ${row.unit==='cm'?'selected':''}>cm</option><option ${row.unit==='m'?'selected':''}>m</option><option ${row.unit==='个'?'selected':''}>个</option><option ${row.unit==='套'?'selected':''}>套</option><option ${row.unit==='项'?'selected':''}>项</option></select><button class="remove-row" type="button" aria-label="删除这一行">×</button>`; $('.remove-row',wrap).addEventListener('click',()=>{ if ($('#measurementRows').children.length>1) wrap.remove(); }); $('#measurementRows').appendChild(wrap); }
+    function renderPreview() { $('#previewGrid').innerHTML=editingImages.map((src,index)=>`<div class="preview-item"><img src="${safeImage(src)}" alt="已添加图片" /><button type="button" data-image-index="${index}" aria-label="删除图片">×</button></div>`).join(''); $('#previewGrid').querySelectorAll('[data-image-index]').forEach((button)=>button.addEventListener('click',()=>{editingImages.splice(Number(button.dataset.imageIndex),1);renderPreview();})); }
+    function openNewItem() { editingImages=[]; pendingFiles=[]; $('#formTitle').textContent='新增装修事项'; $('#itemId').value=''; $('#titleInput').value=''; $('#roomInput').value=''; $('#descriptionInput').value=''; $('#notesInput').value=''; $('#imageInput').value=''; resetMeasurementRows(); renderPreview(); openModal('formModal'); setTimeout(()=>$('#titleInput').focus(),50); }
+    function openEdit(item) { editingImages=[...(item.images||[])]; pendingFiles=[]; $('#formTitle').textContent='编辑装修事项'; $('#itemId').value=item.id; $('#titleInput').value=item.title; $('#roomInput').value=item.room; $('#descriptionInput').value=item.description||''; $('#notesInput').value=item.notes||''; $('#imageInput').value=''; resetMeasurementRows(item.measurements?.length ? item.measurements : undefined); renderPreview(); openModal('formModal'); }
+    function collectMeasurements() { return [...document.querySelectorAll('.measurement-row')].map((row)=>({label:$('.measurement-label',row).value.trim(),value:$('.measurement-value',row).value.trim(),unit:$('.measurement-unit',row).value})).filter((row)=>row.label||row.value); }
+    function renderDetail(item) { if (!item) return; const images=(item.images||[]).map(safeImage).filter(Boolean); const imageHtml=images.length ? images.map((src)=>`<div class="detail-image"><img src="${src}" alt="${escapeHtml(item.title)}参考图" /></div>`).join('') : '<div class="detail-image" style="grid-column:1/-1;display:grid;place-items:center;color:rgba(255,255,255,.9);font-size:12px;">现场照片 / 参考图</div>'; const specs=(item.measurements||[]).filter((row)=>row.label||row.value).map((row)=>`<div class="spec-line"><span>${escapeHtml(row.label||'尺寸')}</span><span>${escapeHtml(row.value||'—')} ${escapeHtml(row.unit||'')}</span></div>`).join('') || '<div class="spec-line"><span>尺寸规范</span><span>尚未填写</span></div>'; const confirmed=item.status==='done'; $('#detailTitle').textContent=item.title; $('#detailBody').innerHTML=`<div class="card-top"><div><div class="card-meta">${escapeHtml(item.room)}　·　${escapeHtml(item.author||'未署名')}提出　·　${escapeHtml(new Intl.DateTimeFormat('zh-CN',{month:'numeric',day:'numeric'}).format(new Date(item.updatedAt)))}</div></div><span class="status ${confirmed?'done':'pending'}">${statusLabel(item.status)}</span></div><div class="detail-image-grid">${imageHtml}</div>${item.description?`<p class="card-note">${escapeHtml(item.description)}</p>`:''}<div class="detail-section"><h3>尺寸与规范</h3><div class="spec-table">${specs}</div></div><div class="detail-section"><h3>讨论与确认</h3><div class="confirm-panel"><strong>${confirmed?'这条需求已确定':'还没定下来'}</strong><p>${confirmed?`由 ${escapeHtml(item.confirmedBy||'参与者')} 确认，施工方可以按这条执行。`:'确认后，施工方可以按这条执行；如果之后有变化，再编辑并说明。'}</p><button class="primary-button" id="confirmItem" type="button">${confirmed?'改回待定':'我确认这条需求'}</button></div></div>${item.notes?`<div class="detail-section"><h3>补充说明</h3><p class="card-note">${escapeHtml(item.notes)}</p></div>`:''}<div class="last-updated">最后修改：${escapeHtml(item.author||'未署名')} · ${escapeHtml(nowOrLabel(item.updatedAt))}<br>${confirmed?'确认状态可随时修改。':'状态仅有“待定 / 已确定”，保持清晰。'}</div><div class="form-actions"><button class="secondary-button" id="editItem" type="button">编辑事项</button><button class="danger-button" id="deleteItem" type="button">删除</button></div>`; $('#confirmItem').addEventListener('click',()=>{ item.status=confirmed?'pending':'done'; item.confirmedBy=confirmed?'':(currentUser||'参与者'); item.updatedAt=new Date().toISOString(); saveState(); renderCards(); renderDetail(item); }); $('#editItem').addEventListener('click',()=>{ closeModal('detailModal'); openEdit(item); }); $('#deleteItem').addEventListener('click',()=>{ if(confirm('确定删除这条装修事项吗？')) { state.items=state.items.filter((entry)=>entry.id!==item.id); saveState(); closeModal('detailModal'); renderCards(); } }); }
+    function nowOrLabel(iso) { try { return new Intl.DateTimeFormat('zh-CN',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}).format(new Date(iso)); } catch (_) { return '刚刚'; } }
+    function fileToDataUrl(file) { return new Promise((resolve,reject)=>{ const reader=new FileReader(); reader.onload=()=>{ const image=new Image(); image.onload=()=>{ const max=1500; const ratio=Math.min(1,max/Math.max(image.width,image.height)); const canvas=document.createElement('canvas'); canvas.width=Math.max(1,Math.round(image.width*ratio)); canvas.height=Math.max(1,Math.round(image.height*ratio)); canvas.getContext('2d').drawImage(image,0,0,canvas.width,canvas.height); resolve(canvas.toDataURL('image/jpeg',.82)); }; image.onerror=reject; image.src=reader.result; }; reader.onerror=reject; reader.readAsDataURL(file); }); }
+    function updateAfterDataChange() { saveState(); renderCards(); }
+    $('#searchInput').addEventListener('input',renderCards);
+    document.querySelectorAll('.filter').forEach((button)=>button.addEventListener('click',()=>{currentFilter=button.dataset.filter;document.querySelectorAll('.filter').forEach((el)=>el.classList.remove('active'));button.classList.add('active');renderCards();}));
+    $('#cards').addEventListener('click',(event)=>{ const card=event.target.closest('[data-id]'); if(card) renderDetail(state.items.find((item)=>item.id===card.dataset.id)), openModal('detailModal'); });
+    $('#addButton').addEventListener('click',()=>{ if(!currentUser) openModal('nicknameModal'); else openNewItem(); });
+    $('#userButton').addEventListener('click',()=>{ $('#nicknameInput').value=currentUser; openModal('nicknameModal'); setTimeout(()=>$('#nicknameInput').focus(),50); });
+    $('#nicknameForm').addEventListener('submit',(event)=>{event.preventDefault();const name=$('#nicknameInput').value.trim();if(!name)return;currentUser=name;localStorage.setItem(NAME_KEY,name);const names=JSON.parse(localStorage.getItem(KNOWN_NAMES_KEY)||'[]');if(!names.includes(name))localStorage.setItem(KNOWN_NAMES_KEY,JSON.stringify([...names,name]));renderHeader();closeModal('nicknameModal');});
+    $('#addMeasurement').addEventListener('click',()=>addMeasurementRow());
+    $('#imageInput').addEventListener('change',(event)=>{pendingFiles=[...event.target.files].slice(0,4-editingImages.length);pendingFiles.forEach((file)=>{if(!file.type.startsWith('image/'))return;fileToDataUrl(file).then((src)=>{editingImages.push(src);renderPreview();}).catch(()=>{});});});
+    $('#itemForm').addEventListener('submit',(event)=>{event.preventDefault();const title=$('#titleInput').value.trim();const room=$('#roomInput').value.trim();if(!title||!room)return;const id=$('#itemId').value;const existing=state.items.find((item)=>item.id===id);const item=existing||{id:uid(),status:'pending',confirmedBy:''};Object.assign(item,{title,room,description:$('#descriptionInput').value.trim(),images:editingImages,measurements:collectMeasurements(),notes:$('#notesInput').value.trim(),author:currentUser||'未署名',updatedAt:new Date().toISOString()});if(!existing)state.items.unshift(item);updateAfterDataChange();closeModal('formModal');});
+    $('#exportButton').addEventListener('click',()=>{const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const link=document.createElement('a');link.href=url;link.download=`家庭装修需求-${new Date().toISOString().slice(0,10)}.json`;link.click();URL.revokeObjectURL(url);});
+    $('#exportButton').addEventListener('contextmenu',(event)=>{event.preventDefault();$('#importInput').click();});
+    $('#importInput').addEventListener('change',(event)=>{const file=event.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=()=>{try{const imported=JSON.parse(reader.result);if(!imported||!Array.isArray(imported.items))throw new Error('invalid');state={version:1,updatedAt:new Date().toISOString(),items:imported.items};saveState();renderCards();alert('导入成功。');}catch(_){alert('这不是有效的装修需求数据文件。');}};reader.readAsText(file);event.target.value='';});
+    document.querySelectorAll('[data-close]').forEach((button)=>button.addEventListener('click',()=>closeModal(button.dataset.close)));
+    document.querySelectorAll('.modal-backdrop').forEach((backdrop)=>backdrop.addEventListener('click',(event)=>{if(event.target===backdrop)closeModal(backdrop.id);}));
+    window.addEventListener('keydown',(event)=>{if(event.key==='Escape')document.querySelectorAll('.modal-backdrop.open').forEach((modal)=>closeModal(modal.id));});
+    if(channel) channel.onmessage=(event)=>{if(event.data?.type==='state'&&event.data.state?.items){state=event.data.state;renderCards();}};
+    window.addEventListener('storage',(event)=>{if(event.key===STORAGE_KEY){state=loadState();renderCards();}});
+    renderHeader(); renderCards();
+    if(!currentUser) setTimeout(()=>openModal('nicknameModal'),350);
+  </script>
+</body>
+</html>
