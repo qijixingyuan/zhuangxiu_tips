@@ -1,0 +1,16 @@
+# Local verification and recovery material — never publish.
+work/
+
+# Python runtime artefacts.
+__pycache__/
+*.py[cod]
+
+# Runtime data and backups stay on the deployment server.
+*.sqlite3
+uploads/
+backups/
+*.log
+
+# Local credentials.
+.env
+.env.*

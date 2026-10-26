@@ -1,0 +1,20 @@
+[Unit]
+Description=Family renovation data API
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/renovation-api
+Environment=RENOVATION_HOST=127.0.0.1
+Environment=RENOVATION_PORT=3188
+Environment=RENOVATION_DATA_DIR=/www/wwwroot/zhuangxiu-data
+ExecStart=/www/server/nodejs/v18.20.8/bin/node /opt/renovation-api/server.js
+Restart=on-failure
+RestartSec=3
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+
+[Install]
+WantedBy=multi-user.target

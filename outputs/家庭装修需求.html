@@ -43,17 +43,21 @@
     .search input { width: 100%; border: 0; outline: 0; color: var(--ink); background: transparent; font-size: 13px; }
     .tool-button { display: inline-flex; align-items: center; justify-content: center; min-width: 42px; min-height: 42px; padding: 0 12px; border-radius: 13px; color: var(--green); background: var(--green-soft); font-size: 13px; }
     .tool-button:hover { background: #d4e8dc; }
-    .filters { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: none; }
-    .filters::-webkit-scrollbar { display: none; }
-    .filter { flex: 0 0 auto; padding: 9px 13px; border-radius: 999px; color: var(--muted); background: #eeece6; font-size: 12px; }
+    .filters { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding-bottom: 2px; }
+    .status-filters, .room-filters { display: flex; flex-wrap: wrap; gap: 8px; }
+    .status-filters { flex: 0 0 auto; }
+    .room-filters { flex: 1 1 180px; }
+    .filter-divider { width: 1px; align-self: stretch; min-height: 28px; background: #d8d6ce; }
+    .filter-divider.hidden { display: none; }
+    .filter { flex: 0 0 auto; padding: 8px 11px; border-radius: 999px; color: var(--muted); background: #eeece6; font-size: 12px; }
     .filter.active { color: #fff; background: var(--ink); }
     .filter.active.pending { color: var(--yellow-ink); background: var(--yellow); }
     .filter.active.done { color: var(--green); background: var(--green-soft); }
     .section-heading { display: flex; align-items: baseline; justify-content: space-between; margin: 22px 0 10px; }
     .section-heading h2 { margin: 0; color: var(--muted); font-size: 12px; font-weight: 600; }
     .section-heading span { color: #a5a7a6; font-size: 11px; }
-    .cards { display: grid; gap: 12px; }
-    .requirement-card { overflow: hidden; padding: 15px; border: 1px solid rgba(231,227,218,.65); border-radius: var(--radius); background: var(--card); box-shadow: 0 5px 18px rgba(48,55,53,.04); transition: transform .16s ease, box-shadow .16s ease; }
+    .cards { display: grid; gap: 9px; }
+    .requirement-card { overflow: hidden; padding: 12px; border: 1px solid rgba(231,227,218,.65); border-radius: 14px; background: var(--card); box-shadow: 0 5px 18px rgba(48,55,53,.04); transition: transform .16s ease, box-shadow .16s ease; }
     .requirement-card:hover { transform: translateY(-1px); box-shadow: var(--shadow); }
     .card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
     .card-title { margin: 0; font-size: 16px; line-height: 1.35; letter-spacing: -.02em; }
@@ -62,12 +66,11 @@
     .status.done { color: var(--green); background: var(--green-soft); }
     .card-meta, .card-note { color: var(--muted); font-size: 12px; line-height: 1.5; }
     .card-meta { margin-top: 7px; }
-    .image-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-top: 12px; }
-    .image-thumb { overflow: hidden; min-height: 72px; border-radius: 10px; background: linear-gradient(135deg, #cac9bf, #b5b5a9); }
-    .image-thumb img { display: block; width: 100%; height: 100%; min-height: 72px; object-fit: cover; }
-    .image-placeholder { display: grid; place-items: center; min-height: 72px; color: rgba(255,255,255,.9); font-size: 11px; }
-    .image-strip > .image-placeholder:only-child { grid-column: 1 / -1; }
-    .card-bottom { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 12px; }
+    .image-strip { display: flex; gap: 6px; margin-top: 9px; }
+    .image-thumb { position: relative; flex: 0 0 52px; overflow: hidden; height: 52px; border-radius: 9px; background: linear-gradient(135deg, #cac9bf, #b5b5a9); }
+    .image-thumb img { display: block; width: 100%; height: 100%; object-fit: cover; }
+    .image-more { position: absolute; inset: 0; display: grid; place-items: center; color: #fff; background: rgba(24,39,33,.62); font-size: 13px; font-weight: 700; }
+    .card-bottom { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 9px; }
     .spec-summary { overflow: hidden; color: var(--muted); font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
     .card-arrow { color: #8a8f8d; font-size: 22px; line-height: 1; }
     .empty { padding: 34px 20px; border: 1px dashed #d6d1c6; border-radius: var(--radius); color: var(--muted); text-align: center; }
@@ -110,9 +113,18 @@
     .primary-button { color: #fff; background: var(--green); }
     .secondary-button { color: var(--green); background: var(--green-soft); }
     .danger-button { flex: 0 0 auto; padding: 0 14px; color: #9b5b50; background: #f5e8e4; }
-    .detail-image-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 16px; }
-    .detail-image { overflow: hidden; min-height: 105px; border-radius: 12px; background: #c7c6bc; }
-    .detail-image img { display: block; width: 100%; height: 100%; min-height: 105px; object-fit: cover; }
+    .detail-image-grid { display: flex; gap: 9px; overflow-x: auto; margin-bottom: 16px; padding-bottom: 2px; scroll-snap-type: x mandatory; }
+    .detail-image { flex: 0 0 min(86%, 420px); overflow: hidden; min-height: 245px; border-radius: 12px; background: #c7c6bc; scroll-snap-align: start; }
+    .detail-image img { display: block; width: 100%; height: 100%; min-height: 245px; object-fit: cover; cursor: zoom-in; }
+    .image-viewer { width: min(100%, 760px); max-width: none; min-height: 100%; padding: 0; border-radius: 0; color: #fff; background: #101512; }
+    .viewer-head { display: flex; align-items: center; justify-content: space-between; min-height: 58px; padding: 0 16px; }
+    .viewer-counter { color: rgba(255,255,255,.72); font-size: 13px; }
+    .viewer-close, .viewer-nav { color: #fff; background: rgba(255,255,255,.14); }
+    .viewer-close { width: 38px; height: 38px; border-radius: 50%; font-size: 24px; }
+    .viewer-stage { position: relative; display: grid; place-items: center; min-height: calc(100vh - 58px); padding: 12px 48px 30px; }
+    .viewer-stage img { display: block; max-width: 100%; max-height: calc(100vh - 110px); object-fit: contain; }
+    .viewer-nav { position: absolute; top: 50%; width: 38px; height: 46px; border-radius: 12px; transform: translateY(-50%); font-size: 30px; }
+    .viewer-prev { left: 10px; } .viewer-next { right: 10px; }
     .detail-section { margin-top: 16px; }
     .detail-section h3 { margin: 0 0 9px; color: var(--muted); font-size: 12px; font-weight: 600; }
     .spec-table { overflow: hidden; border-radius: 13px; background: #fff; }
@@ -124,24 +136,26 @@
     .confirm-panel p { margin: 0 0 12px; color: var(--muted); font-size: 12px; line-height: 1.5; }
     .last-updated { margin-top: 14px; color: var(--muted); font-size: 11px; line-height: 1.6; }
     .notice { margin: 12px 0 0; padding: 10px 12px; border-radius: 11px; color: #6b6659; background: #f1eee5; font-size: 11px; line-height: 1.5; }
+    .backup-textarea { width: 100%; min-height: 210px; padding: 11px 12px; border: 1px solid var(--line); border-radius: 12px; color: var(--ink); background: #fff; font: 12px/1.5 ui-monospace, SFMono-Regular, Consolas, monospace; resize: vertical; }
+    .backup-help { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.55; }
     .hidden { display: none !important; }
     @media (min-width: 700px) { .app-shell { min-height: calc(100vh - 28px); margin: 14px auto; border-radius: 28px; box-shadow: 0 12px 50px rgba(43,49,49,.12); } .app-header { border-radius: 28px 28px 0 0; } main { padding-left: 34px; padding-right: 34px; } }
-    @media (max-width: 420px) { .app-header { padding-left: 16px; padding-right: 16px; } main { padding-left: 16px; padding-right: 16px; } .measurement-row { grid-template-columns: 1fr .68fr 64px 30px; } }
+    @media (max-width: 420px) { .app-header { padding-left: 16px; padding-right: 16px; } main { padding-left: 16px; padding-right: 16px; } .measurement-row { grid-template-columns: 1fr .68fr 64px 30px; } .room-filters { flex-basis: 100%; } .filter-divider { display: none; } .detail-image { flex-basis: 92%; } }
   </style>
 </head>
 <body>
   <div class="app-shell">
     <header class="app-header">
-      <div class="brand"><span class="brand-mark">家</span><div><h1 class="brand-title">装修需求</h1><p class="brand-subtitle">家庭共享清单 · 本地保存</p></div></div>
+      <div class="brand"><span class="brand-mark">家</span><div><h1 class="brand-title">装修需求</h1><p class="brand-subtitle">家庭共享清单 · 服务器保存</p></div></div>
       <button class="user-button" id="userButton" type="button"><span class="avatar" id="userAvatar">?</span><span id="userName">设置昵称</span></button>
     </header>
     <main>
       <section class="intro"><h1>把每个想法，变成一条能落地的事项</h1><p>家人、设计师、施工方共用一份清单。先记下来，再一起确认。</p></section>
       <div class="toolbar"><label class="search"><span aria-hidden="true">⌕</span><input id="searchInput" type="search" placeholder="搜索事项、房间或尺寸" /></label><button class="tool-button" id="importButton" type="button" title="导入数据">导入</button><button class="tool-button" id="exportButton" type="button" title="导出数据">导出</button><input id="importInput" class="hidden" type="file" accept="application/json" /></div>
-      <div class="filters" role="tablist" aria-label="筛选状态"><button class="filter active" data-filter="all" type="button">全部 <span id="allCount">0</span></button><button class="filter pending" data-filter="pending" type="button">待定 <span id="pendingCount">0</span></button><button class="filter done" data-filter="done" type="button">已确定 <span id="doneCount">0</span></button></div>
-      <div class="section-heading"><h2>最近更新</h2><span id="updatedHint">本设备自动保存</span></div>
+      <div class="filters" aria-label="筛选事项"><div class="status-filters" role="group" aria-label="按状态筛选"><button class="filter active" data-filter="all" type="button" aria-pressed="true">全部 <span id="allCount">0</span></button><button class="filter pending" data-filter="pending" type="button" aria-pressed="false">待定 <span id="pendingCount">0</span></button><button class="filter done" data-filter="done" type="button" aria-pressed="false">已确定 <span id="doneCount">0</span></button></div><span class="filter-divider hidden" id="filterDivider" aria-hidden="true"></span><div class="room-filters" id="roomFilters" role="group" aria-label="按房间筛选"></div></div>
+      <div class="section-heading"><h2>最近更新</h2><span id="updatedHint">正在连接云端</span></div>
       <section id="cards" class="cards" aria-live="polite"></section>
-      <div class="notice">当前版本先用浏览器本地保存，适合先整理需求；换设备前请使用“导出”。接入云端后，才会实现真正的多人实时同步。</div>
+      <div class="notice">家庭成员打开同一个链接后会看到同一份清单。网络暂时不可用时仍会保存在本机，恢复网络后自动同步。</div>
     </main>
   </div>
   <button class="fab" id="addButton" type="button"><span>＋</span>新增装修事项</button>
@@ -152,40 +166,138 @@
 
   <div class="modal-backdrop" id="detailModal" aria-hidden="true"><section class="modal" role="dialog" aria-modal="true" aria-labelledby="detailTitle"><div class="modal-head"><h2 id="detailTitle">事项详情</h2><button class="icon-button" data-close="detailModal" type="button" aria-label="关闭">×</button></div><div id="detailBody"></div></section></div>
 
+  <div class="modal-backdrop" id="imageViewerModal" aria-hidden="true"><section class="modal image-viewer" role="dialog" aria-modal="true" aria-label="图片浏览"><div class="viewer-head"><span class="viewer-counter" id="viewerCounter"></span><button class="viewer-close" data-close="imageViewerModal" type="button" aria-label="关闭图片浏览">×</button></div><div class="viewer-stage"><button class="viewer-nav viewer-prev" id="viewerPrev" type="button" aria-label="上一张">‹</button><img id="viewerImage" alt="装修参考图片" /><button class="viewer-nav viewer-next" id="viewerNext" type="button" aria-label="下一张">›</button></div></section></div>
+
+  <div class="modal-backdrop" id="backupModal" aria-hidden="true"><section class="modal" role="dialog" aria-modal="true" aria-labelledby="backupTitle"><div class="modal-head"><h2 id="backupTitle">导出 / 备份数据</h2><button class="icon-button" data-close="backupModal" type="button" aria-label="关闭">×</button></div><p class="backup-help" id="backupStatus">数据已整理好。微信内置页面如果不能下载文件，可以点击“复制数据”，再粘贴到电脑上的文本文件中保存。</p><textarea class="backup-textarea" id="backupText" readonly></textarea><div class="form-actions"><button class="secondary-button" id="copyBackupButton" type="button">复制数据</button><button class="primary-button" id="downloadBackupButton" type="button">下载 JSON</button></div></section></div>
+
   <script>
     const STORAGE_KEY = 'home-renovation-brief:v1';
     const NAME_KEY = 'home-renovation-brief:nickname';
     const KNOWN_NAMES_KEY = 'home-renovation-brief:names';
     const memoryStore = {};
+    const SERVER_ORIGIN = location.protocol === 'file:' ? 'https://zhuangxiu.goodsport.fun' : '';
+    const API_BASE = `${SERVER_ORIGIN}/api`;
+    let serverRevision = 0;
+    let serverReady = false;
+    let serverLastError = '';
+    let serverSaveTimer = null;
+    let serverSaveInFlight = null;
     let channel = null;
     try { if ('BroadcastChannel' in window) channel = new BroadcastChannel('home-renovation-brief'); } catch (_) { channel = null; }
     let currentFilter = 'all';
+    let currentRoomFilter = 'all';
+    let viewerImages = [];
+    let viewerIndex = 0;
     let editingImages = [];
     let pendingFiles = [];
 
     const $ = (selector, root = document) => root.querySelector(selector);
     const escapeHtml = (value) => String(value ?? '').replace(/[&<>'"]/g, (char) => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
-    const safeImage = (value) => typeof value === 'string' && value.startsWith('data:image/') ? value : '';
+    const safeImage = (value) => {
+      if (typeof value !== 'string') return '';
+      if (value.startsWith('data:image/')) return value;
+      if (value.startsWith('/uploads/')) return `${SERVER_ORIGIN}${value}`;
+      return '';
+    };
     const uid = () => `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
     const nowLabel = () => new Intl.DateTimeFormat('zh-CN', {month:'numeric', day:'numeric', hour:'2-digit', minute:'2-digit'}).format(new Date());
-    const defaultState = () => ({ version: 1, updatedAt: new Date().toISOString(), items: [
-      {id: uid(), title:'客厅电视墙插座', room:'客厅', author:'设计师', description:'电视柜和扫地机器人都要方便使用。', images:[], measurements:[{label:'距地高度', value:'300', unit:'mm'},{label:'插座数量', value:'6', unit:'个'}], notes:'预留网线和电源，注意不要被柜体挡住。', status:'pending', confirmedBy:'', updatedAt:new Date().toISOString()},
-      {id: uid(), title:'主卧衣柜', room:'主卧', author:'林阿姨', description:'希望收纳换季被子和长衣。', images:[], measurements:[{label:'宽', value:'2400', unit:'mm'},{label:'深', value:'600', unit:'mm'}], notes:'柜门颜色再和设计师确认。', status:'done', confirmedBy:'设计师', updatedAt:new Date().toISOString()}
-    ]});
+    const defaultState = () => ({ version: 2, updatedAt: new Date().toISOString(), items: [] });
     function storageGet(key) { try { return localStorage.getItem(key); } catch (_) { return memoryStore[key] || null; } }
     function storageSet(key, value) { memoryStore[key] = value; try { localStorage.setItem(key, value); } catch (_) {} }
     function loadState() { try { const parsed = JSON.parse(storageGet(STORAGE_KEY)); if (parsed && Array.isArray(parsed.items)) return parsed; } catch (_) {} return defaultState(); }
     let state = loadState();
     let currentUser = storageGet(NAME_KEY) || '';
-    function saveState(broadcast = true) { state.updatedAt = new Date().toISOString(); storageSet(STORAGE_KEY, JSON.stringify(state)); if (broadcast && channel) { try { channel.postMessage({type:'state', state}); } catch (_) {} } }
+    function setCloudStatus(label) { const el=$('#updatedHint'); if (el) el.textContent=label; }
+    function mergeStates(remoteState, localState) {
+      const byId = new Map();
+      [...(remoteState?.items || []), ...(localState?.items || [])].forEach((item) => {
+        const previous = byId.get(item.id);
+        if (!previous || new Date(item.updatedAt || 0).getTime() >= new Date(previous.updatedAt || 0).getTime()) byId.set(item.id, item);
+      });
+      const updatedAt = new Date(Math.max(new Date(remoteState?.updatedAt || 0).getTime(), new Date(localState?.updatedAt || 0).getTime())).toISOString();
+      return {version:2, updatedAt, items:[...byId.values()]};
+    }
+    async function uploadImage(dataUrl) {
+      if (dataUrl.startsWith('/uploads/')) return dataUrl;
+      const blob = await (await fetch(dataUrl)).blob();
+      const response = await fetch(`${API_BASE}/uploads`, {method:'POST', headers:{'Content-Type':blob.type || 'image/jpeg'}, body:blob});
+      const result = await response.json();
+      if (!response.ok || !result.url) throw new Error(result.error || '图片上传失败');
+      return result.url;
+    }
+    async function prepareStateForServer() {
+      const prepared = JSON.parse(JSON.stringify(state));
+      for (const item of prepared.items) item.images = await Promise.all((item.images || []).map(uploadImage));
+      return prepared;
+    }
+    async function pushServerState() {
+      if (serverSaveInFlight) return serverSaveInFlight;
+      serverSaveInFlight = (async () => {
+        try {
+          setCloudStatus('正在安全保存…');
+          const prepared = await prepareStateForServer();
+          const response = await fetch(`${API_BASE}/state`, {method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify({state:prepared,revision:serverRevision})});
+          const result = await response.json();
+          if (response.status === 409 && result.state) {
+            state = mergeStates(result.state, prepared);
+            serverRevision = result.revision;
+            storageSet(STORAGE_KEY, JSON.stringify(state));
+            serverSaveInFlight = null;
+            return pushServerState();
+          }
+          if (!response.ok || !result.state) throw new Error(result.error || '服务器未确认保存');
+          state = result.state;
+          serverRevision = result.revision;
+          serverReady = true;
+          serverLastError = '';
+          storageSet(STORAGE_KEY, JSON.stringify(state));
+          setCloudStatus('已安全保存到服务器');
+        } catch (error) {
+          serverLastError = error?.message || 'unknown';
+          setCloudStatus('服务器暂不可用，本机暂存');
+          throw error;
+        } finally { serverSaveInFlight = null; }
+      })();
+      return serverSaveInFlight;
+    }
+    function saveState(broadcast = true) {
+      state.updatedAt = new Date().toISOString();
+      storageSet(STORAGE_KEY, JSON.stringify(state));
+      setCloudStatus('正在保存到服务器…');
+      if (broadcast && channel) { try { channel.postMessage({type:'state', state}); } catch (_) {} }
+      clearTimeout(serverSaveTimer); serverSaveTimer=setTimeout(()=>pushServerState().catch(()=>{}),250);
+    }
+    async function initServer() {
+      try {
+        const response = await fetch(`${API_BASE}/state`, {cache:'no-store'});
+        const remote = await response.json();
+        if (!response.ok) throw new Error(remote.error || '服务器连接失败');
+        serverRevision = remote.revision || 0;
+        if (remote.state && Array.isArray(remote.state.items)) state = mergeStates(remote.state, state);
+        storageSet(STORAGE_KEY, JSON.stringify(state));
+        serverReady = true;
+        renderCards();
+        setCloudStatus('已连接服务器');
+        if (!remote.state && state.items.length) await pushServerState();
+      } catch (error) { serverLastError = error?.message || 'unknown'; serverReady=false; setCloudStatus('服务器未连接，本机暂存'); }
+    }
     function statusLabel(status) { return status === 'done' ? '已确定' : '待定'; }
     function getMeasurementsText(item) { return item.measurements?.filter((row) => row.label || row.value).map((row) => `${row.label || '尺寸'} ${row.value || '—'} ${row.unit || ''}`.trim()).join('  ·  ') || '还没有填写尺寸规范'; }
     function openModal(id) { const el = document.getElementById(id); el.classList.add('open'); el.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden'; }
     function closeModal(id) { const el = document.getElementById(id); el.classList.remove('open'); el.setAttribute('aria-hidden','true'); if (!document.querySelector('.modal-backdrop.open')) document.body.style.overflow=''; }
+    function renderViewer() { if (!viewerImages.length) return; $('#viewerImage').src=viewerImages[viewerIndex]; $('#viewerCounter').textContent=`${viewerIndex+1} / ${viewerImages.length}`; $('#viewerPrev').disabled=viewerImages.length<2; $('#viewerNext').disabled=viewerImages.length<2; }
+    function openImageViewer(images,index=0) { viewerImages=images.filter(Boolean); viewerIndex=Math.max(0,Math.min(index,viewerImages.length-1)); if (!viewerImages.length) return; renderViewer(); openModal('imageViewerModal'); }
+    function moveViewer(step) { if (viewerImages.length<2) return; viewerIndex=(viewerIndex+step+viewerImages.length)%viewerImages.length; renderViewer(); }
     function renderHeader() { $('#userName').textContent = currentUser || '设置昵称'; $('#userAvatar').textContent = currentUser ? currentUser.slice(0,1) : '?'; }
     function renderCounts() { const all=state.items.length, pending=state.items.filter((i)=>i.status==='pending').length, done=all-pending; $('#allCount').textContent=all; $('#pendingCount').textContent=pending; $('#doneCount').textContent=done; }
-    function visibleItems() { const query=$('#searchInput').value.trim().toLowerCase(); return state.items.filter((item) => { const matchesFilter=currentFilter==='all'||item.status===currentFilter; const haystack=[item.title,item.room,item.description,item.notes,getMeasurementsText(item)].join(' ').toLowerCase(); return matchesFilter && (!query || haystack.includes(query)); }).sort((a,b)=>new Date(b.updatedAt)-new Date(a.updatedAt)); }
-    function renderCards() { renderCounts(); const items=visibleItems(); const root=$('#cards'); if (!items.length) { root.innerHTML='<div class="empty"><strong>还没有匹配的事项</strong><span>换个关键词，或新增一条需要一起确认的装修事项。</span></div>'; return; } root.innerHTML=items.map((item)=>{ const images=(item.images||[]).map(safeImage).filter(Boolean); const thumbs=images.length ? images.slice(0,3).map((src)=>`<div class="image-thumb"><img src="${src}" alt="参考图片" /></div>`).join('') : '<div class="image-thumb image-placeholder">参考图<br>点击查看</div>'; return `<article class="requirement-card" data-id="${escapeHtml(item.id)}"><div class="card-top"><h3 class="card-title">${escapeHtml(item.title)}</h3><span class="status ${item.status==='done'?'done':'pending'}">${statusLabel(item.status)}</span></div><div class="card-meta">${escapeHtml(item.room)}　·　${escapeHtml(item.author || '未署名')}提出</div><div class="image-strip">${thumbs}</div><div class="card-bottom"><span class="spec-summary">${escapeHtml(getMeasurementsText(item))}</span><span class="card-arrow" aria-hidden="true">›</span></div></article>`; }).join(''); }
+    function renderRoomFilters() {
+      const rooms=[...new Set(state.items.map((item)=>String(item.room||'').trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'zh-CN'));
+      if (currentRoomFilter!=='all' && !rooms.includes(currentRoomFilter)) currentRoomFilter='all';
+      $('#filterDivider').classList.toggle('hidden',!rooms.length);
+      $('#roomFilters').innerHTML=rooms.length ? `<button class="filter ${currentRoomFilter==='all'?'active':''}" data-room-filter="all" type="button" aria-pressed="${currentRoomFilter==='all'}">全部房间</button>${rooms.map((room)=>`<button class="filter ${currentRoomFilter===room?'active':''}" data-room-filter="${escapeHtml(room)}" type="button" aria-pressed="${currentRoomFilter===room}">${escapeHtml(room)}</button>`).join('')}` : '';
+    }
+    function visibleItems() { const query=$('#searchInput').value.trim().toLowerCase(); return state.items.filter((item) => { const matchesStatus=currentFilter==='all'||item.status===currentFilter; const matchesRoom=currentRoomFilter==='all'||item.room===currentRoomFilter; const haystack=[item.title,item.room,item.description,item.notes,getMeasurementsText(item)].join(' ').toLowerCase(); return matchesStatus && matchesRoom && (!query || haystack.includes(query)); }).sort((a,b)=>new Date(b.updatedAt)-new Date(a.updatedAt)); }
+    function renderCards() { renderCounts(); renderRoomFilters(); const items=visibleItems(); const root=$('#cards'); if (!items.length) { root.innerHTML='<div class="empty"><strong>还没有匹配的事项</strong><span>换个关键词，或新增一条需要一起确认的装修事项。</span></div>'; return; } root.innerHTML=items.map((item)=>{ const images=(item.images||[]).map(safeImage).filter(Boolean); const shown=images.slice(0,3); const thumbs=shown.length ? `<div class="image-strip">${shown.map((src,index)=>`<div class="image-thumb"><img src="${src}" alt="${escapeHtml(item.title)}参考图 ${index+1}" />${index===2&&images.length>3?`<span class="image-more">+${images.length-3}</span>`:''}</div>`).join('')}</div>` : ''; return `<article class="requirement-card" data-id="${escapeHtml(item.id)}"><div class="card-top"><h3 class="card-title">${escapeHtml(item.title)}</h3><span class="status ${item.status==='done'?'done':'pending'}">${statusLabel(item.status)}</span></div><div class="card-meta">${escapeHtml(item.room)}　·　${escapeHtml(item.author || '未署名')}提出</div>${thumbs}<div class="card-bottom"><span class="spec-summary">${escapeHtml(getMeasurementsText(item))}</span><span class="card-arrow" aria-hidden="true">›</span></div></article>`; }).join(''); }
     function resetMeasurementRows(rows=[{label:'',value:'',unit:'mm'}]) { $('#measurementRows').innerHTML=''; rows.forEach((row)=>addMeasurementRow(row)); }
     function addMeasurementRow(row={label:'',value:'',unit:'mm'}) { const wrap=document.createElement('div'); wrap.className='measurement-row'; wrap.innerHTML=`<input class="measurement-label" maxlength="30" placeholder="名称，如宽度" value="${escapeHtml(row.label)}" /><input class="measurement-value" maxlength="20" placeholder="数值" value="${escapeHtml(row.value)}" /><select class="measurement-unit"><option ${row.unit==='mm'?'selected':''}>mm</option><option ${row.unit==='cm'?'selected':''}>cm</option><option ${row.unit==='m'?'selected':''}>m</option><option ${row.unit==='个'?'selected':''}>个</option><option ${row.unit==='套'?'selected':''}>套</option><option ${row.unit==='项'?'selected':''}>项</option></select><button class="remove-row" type="button" aria-label="删除这一行">×</button>`; $('.remove-row',wrap).addEventListener('click',()=>{ if ($('#measurementRows').children.length>1) wrap.remove(); }); $('#measurementRows').appendChild(wrap); }
     function renderPreview() { $('#previewGrid').innerHTML=editingImages.map((src,index)=>`<div class="preview-item"><img src="${safeImage(src)}" alt="已添加图片" /><button type="button" data-image-index="${index}" aria-label="删除图片">×</button></div>`).join(''); $('#previewGrid').querySelectorAll('[data-image-index]').forEach((button)=>button.addEventListener('click',()=>{editingImages.splice(Number(button.dataset.imageIndex),1);renderPreview();})); }
@@ -202,8 +314,12 @@
     async function handleImagePaste(event) { await pasteFromClipboard(event); }
     function updateAfterDataChange() { saveState(); renderCards(); }
     $('#searchInput').addEventListener('input',renderCards);
-    document.querySelectorAll('.filter').forEach((button)=>button.addEventListener('click',()=>{currentFilter=button.dataset.filter;document.querySelectorAll('.filter').forEach((el)=>el.classList.remove('active'));button.classList.add('active');renderCards();}));
-    $('#cards').addEventListener('click',(event)=>{ const card=event.target.closest('[data-id]'); if(card) renderDetail(state.items.find((item)=>item.id===card.dataset.id)), openModal('detailModal'); });
+    document.querySelectorAll('[data-filter]').forEach((button)=>button.addEventListener('click',()=>{currentFilter=button.dataset.filter;document.querySelectorAll('[data-filter]').forEach((el)=>{const active=el.dataset.filter===currentFilter;el.classList.toggle('active',active);el.setAttribute('aria-pressed',String(active));});renderCards();}));
+    $('#roomFilters').addEventListener('click',(event)=>{const button=event.target.closest('[data-room-filter]');if(!button)return;currentRoomFilter=button.dataset.roomFilter;renderCards();});
+    $('#cards').addEventListener('click',(event)=>{ const card=event.target.closest('[data-id]'); if(!card) return; const item=state.items.find((entry)=>entry.id===card.dataset.id); if(!item) return; $('#detailModal').dataset.itemId=item.id; renderDetail(item); openModal('detailModal'); });
+    $('#detailBody').addEventListener('click',(event)=>{const image=event.target.closest('.detail-image img');if(!image)return;const item=state.items.find((entry)=>entry.id===$('#detailModal').dataset.itemId);if(!item)return;const images=(item.images||[]).map(safeImage).filter(Boolean);const index=images.findIndex((src)=>image.src===new URL(src,location.href).href);openImageViewer(images,index<0?0:index);});
+    $('#viewerPrev').addEventListener('click',()=>moveViewer(-1));
+    $('#viewerNext').addEventListener('click',()=>moveViewer(1));
     $('#addButton').addEventListener('click',()=>{ if(!currentUser) openModal('nicknameModal'); else openNewItem(); });
     $('#userButton').addEventListener('click',()=>{ $('#nicknameInput').value=currentUser; openModal('nicknameModal'); setTimeout(()=>$('#nicknameInput').focus(),50); });
     function saveNickname(event) { if (event) { event.preventDefault(); event.stopPropagation(); } const name=$('#nicknameInput').value.trim(); if(!name){ $('#nicknameInput').focus(); return; } currentUser=name; storageSet(NAME_KEY,name); let names=[]; try { names=JSON.parse(storageGet(KNOWN_NAMES_KEY)||'[]'); } catch (_) {} if(!Array.isArray(names)) names=[]; if(!names.includes(name)) storageSet(KNOWN_NAMES_KEY,JSON.stringify([...names,name])); renderHeader(); closeModal('nicknameModal'); }
@@ -214,16 +330,30 @@
     document.addEventListener('paste',handleImagePaste);
     $('#pasteImageButton').addEventListener('click',async()=>{ const added=await pasteFromClipboard(); if (!added) setPasteStatus('没有读到图片，请先在微信中右键复制图片本身。',true); });
     $('#itemForm').addEventListener('submit',(event)=>{event.preventDefault();const title=$('#titleInput').value.trim();const room=$('#roomInput').value.trim();if(!title||!room)return;const id=$('#itemId').value;const existing=state.items.find((item)=>item.id===id);const item=existing||{id:uid(),status:'pending',confirmedBy:''};Object.assign(item,{title,room,description:$('#descriptionInput').value.trim(),images:editingImages,measurements:collectMeasurements(),notes:$('#notesInput').value.trim(),author:currentUser||'未署名',updatedAt:new Date().toISOString()});if(!existing)state.items.unshift(item);updateAfterDataChange();closeModal('formModal');});
-    $('#exportButton').addEventListener('click',()=>{const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const link=document.createElement('a');link.href=url;link.download=`家庭装修需求-${new Date().toISOString().slice(0,10)}.json`;link.click();URL.revokeObjectURL(url);});
+    function backupPayload() { return JSON.stringify(state, null, 2); }
+    function isWechatWebView() { return /MicroMessenger/i.test(navigator.userAgent); }
+    function openBackupModal() { $('#backupText').value=backupPayload(); $('#backupStatus').textContent=serverReady ? '数据已连接服务器，可复制或下载一份独立备份。' : '服务器暂未连接。请复制或下载这份完整备份，稍后可重新导入。'; openModal('backupModal'); }
+    async function exportBackup() {
+      saveState(false);
+      let cloudMessage='';
+      try { await pushServerState(); cloudMessage='已完成服务器备份并确认写入。'; } catch (_) { cloudMessage='服务器备份未完成，但本机数据仍保留。'; }
+      $('#backupText').value=backupPayload();
+      $('#backupStatus').textContent=`${cloudMessage || '数据已保存在本机。'} ${isWechatWebView() ? '微信内置页面可能拦截下载，请先点击“复制数据”备份。' : '可点击“下载 JSON”保存文件。'}`;
+      openModal('backupModal');
+    }
+    $('#exportButton').addEventListener('click',exportBackup);
+    $('#copyBackupButton').addEventListener('click',async()=>{const text=$('#backupText').value;try{await navigator.clipboard.writeText(text);$('#backupStatus').textContent='已复制全部数据。请粘贴到电脑文本文件中保存，图片也会保留。';}catch(_){$('#backupText').focus();$('#backupText').select();$('#backupStatus').textContent='自动复制被微信拦截，请长按或全选复制文本。';}});
+    $('#downloadBackupButton').addEventListener('click',()=>{const blob=new Blob([$('#backupText').value],{type:'application/json;charset=utf-8'});const url=URL.createObjectURL(blob);const link=document.createElement('a');link.href=url;link.download=`家庭装修需求-${new Date().toISOString().slice(0,10)}.json`;document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);});
     $('#importButton').addEventListener('click',()=>$('#importInput').click());
     $('#importInput').addEventListener('change',(event)=>{const file=event.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=()=>{try{const imported=JSON.parse(reader.result);if(!imported||!Array.isArray(imported.items))throw new Error('invalid');state={version:1,updatedAt:new Date().toISOString(),items:imported.items};saveState();renderCards();alert('导入成功。');}catch(_){alert('这不是有效的装修需求数据文件。');}};reader.readAsText(file);event.target.value='';});
     document.querySelectorAll('[data-close]').forEach((button)=>button.addEventListener('click',()=>closeModal(button.dataset.close)));
     document.querySelectorAll('.modal-backdrop').forEach((backdrop)=>backdrop.addEventListener('click',(event)=>{if(event.target===backdrop)closeModal(backdrop.id);}));
-    window.addEventListener('keydown',(event)=>{if(event.key==='Escape')document.querySelectorAll('.modal-backdrop.open').forEach((modal)=>closeModal(modal.id));});
+    window.addEventListener('keydown',(event)=>{if(event.key==='Escape')document.querySelectorAll('.modal-backdrop.open').forEach((modal)=>closeModal(modal.id));if($('#imageViewerModal').classList.contains('open')&&event.key==='ArrowLeft')moveViewer(-1);if($('#imageViewerModal').classList.contains('open')&&event.key==='ArrowRight')moveViewer(1);});
     if(channel) channel.onmessage=(event)=>{if(event.data?.type==='state'&&event.data.state?.items){state=event.data.state;renderCards();}};
     window.addEventListener('storage',(event)=>{if(event.key===STORAGE_KEY){state=loadState();renderCards();}});
     renderHeader(); renderCards();
     if(!currentUser) setTimeout(()=>openModal('nicknameModal'),350);
+    initServer();
   </script>
 </body>
 </html>
